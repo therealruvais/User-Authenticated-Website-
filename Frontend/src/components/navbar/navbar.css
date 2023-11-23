@@ -1,0 +1,43 @@
+.section {
+  width: 100vw;
+  height: 8vh;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 1300px;
+}
+.left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.left h2 {
+  color: white;
+  font-size: 19px;
+}
+.right {
+  display: flex;
+  gap: 40px;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: Tahoma;
+}
+
+.actived {
+  text-decoration: none;
+  color: red;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: Tahoma;
+}
