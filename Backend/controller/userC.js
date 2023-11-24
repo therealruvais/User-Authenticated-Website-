@@ -6,14 +6,12 @@ const bcrypt = require("bcryptjs");
 const SignUp = async (req, res, next) => {
   let existingUser;
   const { name, email, password } = req.body;
-  console.log(req.body);
   //   const postUser = await UserModel.create({ name, email, password });
   existingUser = await UserModel.findOne({ email: email });
   if (existingUser) {
     res.status(400).json({ msg: `user with ${email} already exists` });
   }
   const encryptText = bcrypt.hashSync(password);
-  console.log(encryptText);
   const user = new UserModel({
     name: name,
     email: email,
@@ -56,22 +54,19 @@ const Login = async (req, res) => {
 };
 
 const userVerification = (req, res, next) => {
-  const cookie = req.headers.cookie;
-  console.log(cookie);
-  let token = cookie.split("=")[1];
-
+  const cookies = req.headers.cookie;
+  const token = cookies.split("=")[1];
   if (!token) {
-    res.status(404).json({ msg: "invalid token" });
+    return res.status(404).json({ msg: "invalid token" });
   }
   jwt.verify(token.toString(), process.env.MY_KEY, (error, user) => {
     if (error) {
-      res.status(404).json({ msg: "invalid credentials" });
+      return res.status(404).json({ msg: "invalid credentials" });
     }
-    console.log(user);
     req.id = user.id;
-    console.log(user.id);
-    next();
+
   });
+  next();
 };
 
 const getUser = async (req, res, next) => {
@@ -89,4 +84,39 @@ const getUser = async (req, res, next) => {
   return res.status(200).json(User);
 };
 
-module.exports = { SignUp, Login, userVerification, getUser };
+
+const refreshToken = (req, res, next) => {
+   const cookie = req.headers.cookie;
+  console.log(cookie);
+  const oldToken = cookie.split("=")[1];
+  if (!oldToken) {
+    return res.status(400).json('something went wrong')
+  }
+  jwt.verify(oldToken.toString(), process.env.MY_KEY, (error, user) => {
+    if (error) {
+      return res.status(403).json({ msg: "Authentication failed" });
+    }
+    res.clearCookie(`${user.id}`)
+    req.cookies[`${user.id}`] = "";
+
+    const newToken = jwt.sign({
+      id:user.id,
+    },
+      process.env.MY_KEY,
+      {
+        expiresIn:"30s"
+      }
+    )
+    res.cookie(String(user.id), newToken, {
+      path: "/",
+      expires: new Date(Date.now() + 1000 * 30),
+      httpOnly: true,
+      sameSite: "lax",
+    });
+    console.log(user)
+    req.id = user.id;
+    next()
+  });
+}
+
+module.exports = { SignUp, Login, userVerification, getUser, refreshToken };

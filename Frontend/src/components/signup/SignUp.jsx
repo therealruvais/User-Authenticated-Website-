@@ -1,41 +1,46 @@
 import React, { useState } from "react";
 import "./signup.css";
-import axios from 'axios'
+import axios from "axios";
+import {useNavigate} from 'react-router-dom'
 
 const SignUp = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
 
- const handleChange = (e) => {
-   setFormData((prev) => ({
-     ...prev,
-     [e.target.name]: e.target.value,
-   }));
- };
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
- const sendData = async () => {
-   const res = await axios.post("http://localhost:3000/api/user/register", {
-     name: formData.name,
-     email: formData.email,
-     password: formData.password,
-   })
-   .catch((error) => {
-     console.log(error)
-   })
-   
-   const Data = await res.data;
-   console.log(Data.user);
-   return Data;
- };
+  const sendData = async () => {
+    const res = await axios
+      .post("http://localhost:3000/api/user/register", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(res)
+    const Data = await res.data;
+    console.log(Data.user);
+    return Data;
+  };
   const handleSubmit = (e) => {
-    e.preventDefault()
-    sendData()
- }
+    e.preventDefault();
+    sendData().then(() => navigate('/login') );
+    setTimeout(() => {
+      setFormData({ name: "", email: "", password: "" });
+    }, [4000]);
+  };
 
-  
   return (
     <div className="sign-section">
       <div className="sign-container">
@@ -80,10 +85,9 @@ const SignUp = () => {
                 type="submit"
                 className="submit-btn"
                 onClick={handleSubmit}
-               
               >
                 Submit
-                </button>
+              </button>
             </div>
           </form>
         </div>

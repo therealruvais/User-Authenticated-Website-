@@ -11,7 +11,7 @@ import "./navbar.css";
 
 const Navbar = () => {
   const [isMounted, setIsMounted] = useState(false);
-  const [activeLink, setActiveLink] = useState("home");
+  const [activeLink, setActiveLink] = useState("");
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
