@@ -1,44 +1,51 @@
 import React, { useEffect, useState } from "react";
 import "./home.css";
 import gsap from "gsap";
-import axios from 'axios'
-
-let flag = true;
+import axios from "axios";
 
 axios.defaults.withCredentials = true;
 
 const Home = () => {
+
+  let flag = true;
+
   const [isMounted, setIsMounted] = useState(false);
-  const [user, setUser] = useState()
-
-
+  const [user, setUser] = useState();
 
   const refreshToken = async () => {
-    const res = await axios.get("http://localhost:3000/api/user/refresh", {
-      withCredentials:true,
-    })
-      .catch((err) => console.log(err))
-    console.log(res)
+    console.log("hit");
+    const res = await axios
+      .get("http://localhost:3000/api/user/refresh", {
+        withCredentials: true,
+      })
+      .catch((err) => console.log(err));
+    console.log(res);
     const Data = await res.data;
+    console.log(Data);
     return Data;
-  }
-
-
+  };
 
   const passRequest = async () => {
-    const response = await axios.get("http://localhost:3000/api/user/verify",{
-      withCredentials : true,
-    })
-      .catch((err) => console.log(err))
-    console.log(response)
-    const data = response.data
-    console.log(data)
+    const response = await axios
+      .get("http://localhost:3000/api/user/verify", {
+        withCredentials: true,
+      })
+      .catch((err) => console.log(err));
+    const data = response.data;
+    // console.log(data)
     return data;
-  }
+  };
 
   useEffect(() => {
-    passRequest().then((data) => setUser(data))
-  },[])
+    if (flag) {
+      flag = false;
+      passRequest().then((data) => setUser(data));
+    }
+    let interval = setInterval(() => {
+      refreshToken().then((data) => setUser(data));
+    }, 1000 * 29);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     setIsMounted(true);

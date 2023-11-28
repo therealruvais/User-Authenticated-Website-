@@ -44,7 +44,7 @@ const Navbar = () => {
             className={`${isMounted ? "navbar-link" : ""} ${
               activeLink == "home" ? "actived" : ""
             }`}
-            to="/"
+            to="/home"
             onClick={() => setActiveLink("home")}
           >
             <AiFillHome style={{ fontSize: "20px" }} />
@@ -82,10 +82,19 @@ const Navbar = () => {
             className={`${isMounted ? "navbar-link" : ""} ${
               activeLink == "login" ? "actived" : ""
             }`}
-            to="/login"
+            to="/"
             onClick={() => setActiveLink("login")}
           >
             <LuLogIn style={{ fontSize: "20px" }} />
+          </Link>
+          <Link
+            className={`${isMounted ? "navbar-link" : ""} ${
+              activeLink == "logout" ? "actived" : ""
+            }`}
+            to="/logout"
+            onClick={() => setActiveLink("logout")}
+          >
+            Logout
           </Link>
         </div>
       </div>

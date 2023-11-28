@@ -24,15 +24,13 @@ const Login = () => {
       .catch((err) => {
         console.log(err);
       });
-    console.log(res);
     const data = await res.data;
-    console.log(data.user)
     return data;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendLoginData().then(() => navigate("/"));
+    sendLoginData().then(() => navigate("/home"));
   };
 
   return (

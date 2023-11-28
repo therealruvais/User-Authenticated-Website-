@@ -7,15 +7,18 @@ import Contact from './components/contact/Contact'
 import About from './components/about/About'
 import Login from './components/login/Login'
 import SignUp from './components/signup/SignUp'
+import { useSelector } from 'react-redux'
 
 const App = () => {
+  const isLoggedIn = useSelector((state) => state.isLoggedIn)
+  console.log(isLoggedIn)
   return (
     <div>
       <Navbar />
       <div>
         <Routes>
           <Route
-            index
+            path='/home'
             element={<Home />}
           />
           <Route
@@ -31,9 +34,13 @@ const App = () => {
             element={<SignUp />}
           />
           <Route
-            path="/login"
+            index
             element={<Login />}
           />
+          {/* <Route
+            path='/logout'
+            element={<Login />}
+          /> */}
         </Routes>
       </div>
     </div>
