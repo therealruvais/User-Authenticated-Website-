@@ -130,4 +130,29 @@ const refreshToken = (req, res, next) => {
   });
 };
 
-module.exports = { SignUp, Login, userVerification, getUser, refreshToken };
+const logOut = async (req, res, next) => {
+  console.log("hit");
+  const cookie = req.headers.cookie;
+  console.log(cookie)
+  const token = cookie.split("=")[1];
+  if (!token) {
+    return res.status(404).json({ msg: "invalid token" });
+  }
+  jwt.verify(token.toString(), process.env.MY_KEY, (error, user) => {
+    if (error) {
+      return res.status(404).json({ msg: "Authentication failed" });
+    }
+    res.clearCookie(`${user.id}`);
+    req.cookies[`${user.id}`] = "";
+    res.json({ msg: "user loggedout" });
+  });
+};
+
+module.exports = {
+  SignUp,
+  Login,
+  userVerification,
+  getUser,
+  refreshToken,
+  logOut,
+};

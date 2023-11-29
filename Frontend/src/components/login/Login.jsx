@@ -3,10 +3,14 @@ import "./login.css";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux'
+import { authActions } from "../../store";
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const dispatch = useDispatch()
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -30,7 +34,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendLoginData().then(() => navigate("/home"));
+    sendLoginData().then(() => dispatch(authActions.login())).then(() => navigate("/home"));
   };
 
   return (
